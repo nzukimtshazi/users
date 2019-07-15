@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Contact\Contact;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Input;
 use Session;
 use Illuminate\Support\Facades\Redirect;
@@ -48,17 +49,12 @@ class ContactsController extends Controller
         $user_id = $request->user_id;
 
         $exists = Contact::where('email', $contact->email)->first();
-        if ($exists) {
+        if ($exists)
             return view('contact.create', compact('user_id'));
-            //return Redirect::route('contact.create')->withInput()->with('danger', 'Contact with email "' . $contact->email . '" already exists!');
-        }
 
         if ($contact->save()) {
             $contacts = Contact::where('user_id', '=', $user_id)->get();
             return view('contact.index', compact('contacts', 'user_id'));
-            //return Redirect::route('contacts')->with('success', 'Successfully added user!');
-        } else {
-            return Redirect::route('contact.create')->withInput()->withErrors($contact->errors());
         }
     }
 
@@ -68,10 +64,12 @@ class ContactsController extends Controller
      * @param  int $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $id)
     {
+        //dd($request->user_id);
         $contact = Contact::find($id);
-        return view('contact.edit', ['contact' => $contact]);
+        $user_id = $request->user_id;
+        return view('contact.edit', compact('contact', 'user_id'));
     }
 
     /**
@@ -94,10 +92,11 @@ class ContactsController extends Controller
             return Redirect::route('contact.edit', [$id])->withInput()->with('danger', 'Contact with email "' . $contact->email . '" already exists!');
         }
 
-        if ($contact->update())
-            return Redirect::route('contacts')->with('success', 'Successfully updated contact!');
-        else
-            return Redirect::route('contact.edit', [$id])->withInput()->withErrors($contact->errors());
+        if ($contact->update()) {
+            $user_id = $request->user_id;
+            $contacts = Contact::where('user_id', '=', $user_id)->get();
+            return view('contact.index', compact('contacts', 'user_id'));
+        }
     }
 
     /**
@@ -108,7 +107,22 @@ class ContactsController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        "DELETE FROM contacts where id = $id";
-        return view('user.create');
+        $contact = Contact::find($id);
+        $contact->delete();
+
+        $user_id = $request->user_id;
+        $contacts = Contact::where('user_id', '=', $user_id)->get();
+        return view('contact.index', compact('contacts', 'user_id'));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function search(Request $request, $id)
+    {
+        //
     }
 }
