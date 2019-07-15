@@ -10,9 +10,10 @@
     <div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-1">
         <div class="panel panel-default">
             <div class="panel-heading">
-                <h3 class="panel-title">Update User {!! $contact->name !!}</h3>
+                <h3 class="panel-title">Update Contact {!! $contact->name !!}</h3>
             </div>
             <div class="panel-body">
+
                 <!-- if there are creation errors, they will show here -->
                 {!! Html::ul($errors->all()) !!}
 
@@ -38,7 +39,15 @@
                     {!! Form::text('contact_no', $contact->contact_no, array('class' => 'form-control', 'required')) !!}
                 </div>
 
-                <a href="{!!URL::route('contact.create')!!}" class="btn btn-info" role="button">Cancel</a>
+                <div class="row">
+                    <div class="col-sm-12 col-md-12">
+                        <div class="col-sm-4 col-md-4">
+                            {{ Form::hidden('user_id', $user_id) }}
+                        </div>
+                    </div>
+                </div>
+
+                <a href="{!!URL::route('contacts', ['user_id' => $user_id])!!}" class="btn btn-info" role="button">Cancel</a>
                 {!! Form::submit('Update', array('class' => 'btn btn-primary')) !!}
                 {!! Form::close() !!}
             </div>
