@@ -19,6 +19,12 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+// show login
+Route::get('user/login', ['as' => 'user.login','uses' => 'UserController@showLogin']);
+
+// do login
+Route::post('user/login', array('uses' => 'UserController@doLogin'));
+
 // create user
 Route::get('user/create', ['as' => 'user.create','uses' => 'UserController@create']);
 
@@ -42,5 +48,8 @@ Route::get('contact/edit/{id}', ['as' => 'contact.edit','uses' => 'ContactsContr
 Route::PATCH('contact/update/{id}', ['as' => 'contact.update','uses' => 'ContactsController@update']);
 
 // delete contact
-Route::PATCH('contact/delete/{id}', ['as' => 'contact.delete','uses' => 'ContactsController@destroy']);
+Route::get('contact/delete/{id}', ['as' => 'contact.delete','uses' => 'ContactsController@destroy']);
+
+// search contact
+Route::get('contact/search}', ['as' => 'contact.search','uses' => 'ContactsController@search']);
 
